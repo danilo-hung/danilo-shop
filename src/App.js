@@ -1,4 +1,5 @@
-import CatItem from './components/cat-item/cat-item.component';
+import Directory from './components/directory/directory.component';
+
 
 const App = () => {
   const cats = [
@@ -32,13 +33,8 @@ const App = () => {
 
 
   return (
+    <Directory prop={cats} />
 
-    <div className="cats-container" >
-      {cats.map((cat) => (
-        <CatItem key={cat.id} prop={cat} />
-      )
-      )}
-    </div>
   );
 }
 

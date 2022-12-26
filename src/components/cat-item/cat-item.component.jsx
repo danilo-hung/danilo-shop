@@ -2,7 +2,6 @@ import './cat-item.style.scss'
 
 const CatItem = ({ prop }) => {
     const {imgUrl, title} = prop;
-
     return (
         <div className='cat-body-box' >
             <div className="cat-container" >
