@@ -1,4 +1,4 @@
-import './cats.style.scss'
+import CatItem from './components/cat-item/cat-item.component';
 
 const App = () => {
   const cats = [
@@ -34,19 +34,8 @@ const App = () => {
   return (
 
     <div className="cats-container" >
-      {cats.map(({ id, title, imgUrl }) => (
-        <div key={id} className='cat-body-box' >
-          <div className="cat-container" >
-            <div className='cat-line'> </div>
-            <div className="background-img">
-              <img src={imgUrl} alt="cat-img" />
-            </div>
-            <div className='content-box'>
-              <h2 className='title'>{title}</h2>
-              <h2 className='sub-title'>Shop Now</h2>
-            </div>
-          </div>
-        </div>
+      {cats.map((cat) => (
+        <CatItem key={cat.id} prop={cat} />
       )
       )}
     </div>
