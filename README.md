@@ -2,6 +2,9 @@
 透過數據庫的建立，本專案將應用該數據庫製作網站的登入系統
 Firebase支援開發者使用Google登入系統
 
+**src/utils/firebase/firebase.utils.js**
+**src/utils/firebase/firebase.utils.js**
+
 ## 設定Google Firebase
 支援開發者啟用database 服務，並使開發者可以使用該數據庫進行前端開發
 1. 在firebase網站中建立一個新的專案 [https://firebase.google.com/](https://firebase.google.com/) 
@@ -47,7 +50,8 @@ const firebaseApp = initializeApp(firebaseConfig);
 9. 進入firestore網頁，在本專案的Authentication功能中新增Sign-in Method, 選擇Google登入方法。
 
 ## fire store 儲存用戶數據資訊 (後端面)
-1. 進入firestore網頁，在本專案的Firestore Database功能中新增database
+1. 進入firestore網頁，在本專案的Firestore Dat
+abase功能中新增database
 >Create步驟中設定production mode
 >新增完database後在工作區上選擇Rule，將 "allow read, write: if ~~false~~ 改成 true;"，這樣在開發階段我們可以調整數據庫內容
 >設定完以上後，可以開始將用戶數據儲存在firestore這個雲端數據中
