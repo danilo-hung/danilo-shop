@@ -14,8 +14,8 @@ const Directory = ({ prop }) => {
                 )}
 
             </div>
-            <div class="copyRight">
-                <i class="fa-regular fa-registered"></i>
+            <div className="copyRight">
+                <i className="fa-regular fa-registered"></i>
                 <span> Danilo 2022</span>
             </div>
         </div>
