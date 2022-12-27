@@ -71,3 +71,7 @@ const Navigation = () => {
 
 export default Navigation
 ```
+
+### import { ReactComponent as CrwnLogo } from '../../assets/CrwnLogo.svg'
+` import { ReactComponent as CrwnLogo } from '../../assets/CrwnLogo.svg' ` 是在component中新增自訂一的element ， project中自訂一CrwnLogo並將svg logo置入在該element中使用
+
