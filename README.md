@@ -102,5 +102,5 @@ const handleSubmit = async (event) => {
 ```
 ### 在navbar的Component中取用UserContext中currentUser的值
 1. 在 src/routes/navigation/navigation.component.jsx中 ` import { useContext } from 'react' ` 、` import { UserContext } from '../../context/user.context' `
-2. 在 return 中 增加 `const {currentUser} = useContext(UserContext) `  
+2. 增加 `const {currentUser} = useContext(UserContext) `  
 > 提醒，因為currentUser是 useState中的變數，所以當Sign in component中的setCurrentUser被觸發時，navigation中的currentUser因為setState的原因，會Re Rander
