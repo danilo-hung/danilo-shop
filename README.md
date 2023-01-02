@@ -39,15 +39,18 @@ export const UserProvider = ({ children }) => {
 }
 ```
 > const [currentUser, setCurrentUser] = useState(null) 透過useState function 將 currentUser跟 setCurrentUser這兩個後續要傳遞到其他Component中使用的變數具有 useState 的功能
+ 
 > const value = { currentUser, setCurrentUser } 設定value。 Value將會是後續取用Context時傳遞的變數
+ 
 > return的內容 <UserContext.Provider> 是React的用法，其包圍起來的Components是可以使用UserContext數據的對象(本例中將設定為全部Components 見步驟3)
+ 
 > {children}是自定義的變數，代表被包起來的對象，例如
 ```js
       <UserProvider>
         <App />
       </UserProvider>
 ```
-> <App /> 就是 {children}
+> `<App />` 就是 {children}
 3. 在index.js中 ` import { UserProvider } from './context/user.context'; ` 並將原本的
 ```js
 root.render(
