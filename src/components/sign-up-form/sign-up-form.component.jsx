@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
@@ -22,6 +22,12 @@ const SignUpForm = () => {
     const [errorMsg, setErrorMsg] = useState("");
     const [signUpMsg, setSignUpMsg] = useState("");
     const { displayName, email, password, confirmPassword } = formFields;
+
+    useEffect(() => {
+        setTimeout(() => {
+            setSignUpMsg("")
+        }, 8000);
+    }, [signUpMsg])
 
     // console.log(formFields);
 

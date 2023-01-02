@@ -1,68 +1,103 @@
-# 數據庫建立 - Google Firebase
-透過數據庫的建立，本專案將應用該數據庫製作網站的登入系統
-Firebase支援開發者使用Google登入系統
+# Context - 設定全局的數據供各個Component取用
+1. 當我們使用變量供子輩Component使用時，通常使用props來傳遞
+2. 但當父輩Component需使用變量供好幾層之下的子輩Component使用時，需傳遞好幾次，造成props drilling issue
+3. 因此，React Hook中，提供環境數據的儲存，供不同的Component直接取用，這個儲存環境稱為Context
 
-**src/utils/firebase/firebase.utils.js**
-**src/utils/firebase/firebase.utils.js**
+## Context的使用概念
+Context的使用分為硬性的三個步驟 : 
+1. 創造Context (createContext) : 在jsx中透過 ` createContext({數據}) ` React Function創造儲存數據的環境
+2. 提供Context (myContext.Provider) : 透過 `<myContext.Provider> <App 或 myComponent/> <myContext.Provider/>` 指定Context 中的數據供包起來的 ` <App 或 myComponent> ` 取用，如果是指定的範圍之外，無法取用該Context中的內容 
+> 取用的方式根據value的設定，不一定只能單向取用，也可以雙向取用
+3. 取用Context (useContext) : 透過在Component中呼叫 `useContext(myContext)` React Function ， 將Context的Value傳遞至該Conponent中使用
 
-## 設定Google Firebase
-支援開發者啟用database 服務，並使開發者可以使用該數據庫進行前端開發
-1. 在firebase網站中建立一個新的專案 [https://firebase.google.com/](https://firebase.google.com/) 
-
-## 建立使用用firebase的Component (sign-in.component.jsx)
-2. 在src/routes中新建sign-in folder, sign-in.component.jsx
-3. 在App.js中設定 "sign-in" Route, 在navigation.component.jsx中設定 "sign-in" link
-
-## 建立firebase環境
-1. 在src中建立utils/firebase/firebase.utils.js
-2. 在firebase網站中打開建立的專案，點選web功能，註冊應用程式，跟著guidline
-3. ` npm add firebase ` 讓react app可以使用firebase的功能
-4. 依據guidline 置入以下編碼，初始化firebase針對本專案的配置
-```js
-import { initializeApp } from "firebase/app";
-
-//啟動firebase在本專案的配置，包含CRUD操作的原始配置，由firebase完成
-const firebaseConfig = {
-    apiKey: "AIzaSyCgdnfl7j7RHh5xWJ4r5wrfO0Wm-rPmEsY",
-    authDomain: "crwn-clothing-db-62b2f.firebaseapp.com",
-    projectId: "crwn-clothing-db-62b2f",
-    storageBucket: "crwn-clothing-db-62b2f.appspot.com",
-    messagingSenderId: "765209954987",
-    appId: "1:765209954987:web:1cf5be0c7c52aef59fc5ee"
-};
-//firebaseApp作為軟體開發套件(SDK)
-const firebaseApp = initializeApp(firebaseConfig);
+### 本專案以用戶登入後Web app得以取用用戶資料為例 建立userContext
+## 創造Context (createContext)
+1. src/(新建)context/user.context.jsx中 ` import { createContext } from 'react'; `
+2. 透過定義 UserContext 儲存 使用者資訊
+```js 
+export const UserContext = createContext({
+    currentUser:null,
+    setCurrentUser: () => null
+}); 
 ```
-## 置入firebase的用戶驗證工具 (前端面)
-1. 在firebase.utils.js 中 ` import {getAuth, signInWithRedirect, signInwithPopup, GoogleAuthProvider} from "firebase/auth" ` 
-> firebase package中的 auth, 主要提供處理authentication有關的工具
-> getAuth : 創建新的Auth - 驗證用戶 (一個web app需創建一個新的Auth來取用作為驗證的條件)
-> signInWithRedirect, signInwithPopup : 一個是利用網頁Redirect到登入畫面，另一個是利用新的視窗作為登入窗口
-> GoogleAuthProvider : 讓使用者可以透過google帳號作為登入方式
-2. 以 ` const provider = new GoogleAuthProvider(); ` 創建provider作為登入驗證的參數，這邊的provider使用new GoogleAuthProvider()，讓使用者透過google帳號登入後的用戶數據作為驗證登入的身分
-3. ` provider.setCustomParameters({prompt: "select_account"}); ` 當用戶點開google帳戶登入時，限制要求用戶選擇他要登入的google 帳號 (該command的參數設定都是firebase的設定值)
-4. ` const auth = getAuth(); ` 創建驗證用戶
-5. ` export const signInwithGooglePopup = () => signInWithPopup(auth, provider) ` 將2、3步驟的參數傳遞到彈出的登入窗口中
+> currentUser 初始值設定為null, 後續當用戶登入時，將用戶資料傳遞到currentUser中儲存
+> setCurrentUser 初始值設定為空白的function，後續Provide Context時將其變成[currentUser, setCurrentUser] = useState(null)中的function
 
-6. 在sign-in.component.jsx中 ` import { signInwithGooglePopup } from '../../utils/firebase/firebase.utils' ` 
-7. 在component中新增button element, 並設定當 onclick時 運行 logGoogleUser function 來彈出google登入的畫面並在成功登入時回傳用戶數據到web app中
-8. logGoogleUser function的設定為 ` const res = await signInwithGooglePopup(); ` ，當用戶在彈出視窗登入時，會回傳res以供web app進行驗證所需的相關參數
-9. 進入firestore網頁，在本專案的Authentication功能中新增Sign-in Method, 選擇Google登入方法。
+## 提供Context(Provide)
+1. src/(新建)context/user.context.jsx中 ` import { useState } from 'react'; `
+2. 透過 React 語法 建立提供UserContext方法的function
+```js
+export const UserProvider = ({ children }) => {
+    const [currentUser, setCurrentUser] = useState(null);
+    const value = { currentUser, setCurrentUser }
 
-## fire store 儲存用戶數據資訊 (後端面)
-1. 進入firestore網頁，在本專案的Firestore Dat
-abase功能中新增database
->Create步驟中設定production mode
->新增完database後在工作區上選擇Rule，將 "allow read, write: if ~~false~~ 改成 true;"，這樣在開發階段我們可以調整數據庫內容
->設定完以上後，可以開始將用戶數據儲存在firestore這個雲端數據中
-2. 在 firebase.utils.js中 ` import {getFirestore, doc, getDoc, setDoc} from 'firebase/firestore' `
-> getFirestore : 提供在firebase中我們新增的專案裡面新增新的database
-> doc : -method (access id) 取出firebase database中指定的database中指定的collections中指定的用戶id
-> getDoc : -method (access data) 取出該指定id中的document(用戶名稱、用戶email、用戶資料)
-> setDoc : -method (set data) 設定該指定id中的document(用戶名稱、用戶email、用戶資料)
-3. 從fire store中取database，設定為db ` const db = getFirestore(); ` 
-4. 設定並**export createUserDocumentFromAuth**函數，在函數中設定變數userDocRef，透過doc()取出該db的userCollections以及該collections中的user.uid
-5. 設定變數userSnapshot，透過getDoc取得userDocRef內的data
-6. 設定條件 : 如果userSnapshot不存在於database中，透過setDoc建立新的document儲存用戶資訊
-7. 在 sign-in.component.jsx中 ` import { createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils'` 
-8. 在 component function中的 logGoogleUser function裡設定新變量 ` const userDoc = await createUserDocumentFromAuth(user) `，當用戶google登入時，查看該用戶是否已為database中的用戶，若是，將相關數據存在userDoc中調用，若不是，在userCollection建立新的document，並回傳該用戶數據在userDoc中調用
+    return (
+        <UserContext.Provider value={value}>
+            {children}
+        </UserContext.Provider>
+    )
+}
+```
+> const [currentUser, setCurrentUser] = useState(null) 透過useState function 將 currentUser跟 setCurrentUser這兩個後續要傳遞到其他Component中使用的變數具有 useState 的功能
+> const value = { currentUser, setCurrentUser } 設定value。 Value將會是後續取用Context時傳遞的變數
+> return的內容 <UserContext.Provider> 是React的用法，其包圍起來的Components是可以使用UserContext數據的對象(本例中將設定為全部Components 見步驟3)
+> {children}是自定義的變數，代表被包起來的對象，例如
+```js
+      <UserProvider>
+        <App />
+      </UserProvider>
+```
+> <App /> 就是 {children}
+3. 在index.js中 ` import { UserProvider } from './context/user.context'; ` 並將原本的
+```js
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+  </React.StrictMode>
+
+);
+```
+改成
+```js
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <UserProvider>
+        <App />
+      </UserProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+
+);
+```
+## 取用Context (useContext)
+### 在登入的Component中取用UserContext中的setcurrentUser function
+1. 在src/components/sign-in-form/sign-in-form.component.jsx中 ` import { useContext } from "react" ` 、 ` import { UserContext } from "../../context/user.context"; `
+2. 透過 React Function - useContext(UserContext) ` const { setCurrentUser } = useContext(UserContext) ` 將setCurrentUser提取到sign in 的 Component中
+3. 在 handleSubmit 的 function 中增加 ` setCurrentUser(user); ` ， 如此一來，當用戶成功登入時，user的data將會傳遞到Context的currentUser之中
+handleSubmit function : 
+```js
+const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const { user } = await signInAuthUserWithEmailAndPassword(email, password)
+            setCurrentUser(user);
+            resetFromField();
+            setLogInMsg("Successfully Log In !");
+        } catch (error) {
+            if (error.code == 'auth/wrong-password') {
+                setErrorMsg("Wrong Email or Password :(")
+            } else if (error.code == 'auth/user-not-found') {
+                setErrorMsg("Eamil not Found :O ")
+            } else {
+                setErrorMsg(error.message)
+            }
+        }
+    }
+```
+### 在navbar的Component中取用UserContext中currentUser的值
+1. 在 src/routes/navigation/navigation.component.jsx中 ` import { useContext } from 'react' ` 、` import { UserContext } from '../../context/user.context' `
+2. 在 return 中 增加 `const {currentUser} = useContext(UserContext) `  
+> 提醒，因為currentUser是 useState中的變數，所以當Sign in component中的setCurrentUser被觸發時，navigation中的currentUser因為setState的原因，會Re Rander
