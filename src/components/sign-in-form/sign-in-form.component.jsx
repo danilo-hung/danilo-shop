@@ -17,14 +17,14 @@ const defaultFormFields = {
 
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
-    const [errorMsg, setErrorMsg] = useState("")
-    const [logInMsg, setLogInMsg] = useState("")
+    const [errorMsg, setErrorMsg] = useState("");
+    const [logInMsg, setLogInMsg] = useState("");
 
     useEffect(() => {
         setTimeout(() => {
             setLogInMsg("")
         }, 8000);
-    }, [formFields, errorMsg])
+    }, [logInMsg])
 
 
     const { email, password } = formFields;
@@ -34,7 +34,8 @@ const SignInForm = () => {
         const res = await signInWithGooglePopup();
         // console.log(res)
         const user = res.user;
-        await createUserDocumentFromAuth(user)
+        await createUserDocumentFromAuth(user);
+        setCurrentUser(user);
     }
 
     const resetFromField = () => {
@@ -49,12 +50,12 @@ const SignInForm = () => {
             setCurrentUser(user);
             resetFromField();
             setLogInMsg("Successfully Log In !");
-
+            setErrorMsg("")
 
         } catch (error) {
-            if (error.code == 'auth/wrong-password') {
+            if (error.code === 'auth/wrong-password') {
                 setErrorMsg("Wrong Email or Password :(")
-            } else if (error.code == 'auth/user-not-found') {
+            } else if (error.code === 'auth/user-not-found') {
                 setErrorMsg("Eamil not Found :O ")
             } else {
                 setErrorMsg(error.message)
@@ -81,7 +82,6 @@ const SignInForm = () => {
                 <FormInput
                     htmlFor="email"
                     label="Email"
-                    id="email"
                     type="email"
                     required
                     onChange={handleChange}
@@ -92,7 +92,6 @@ const SignInForm = () => {
                 <FormInput
                     htmlFor="password"
                     label="Password"
-                    id="password"
                     type="password"
                     required
                     onChange={handleChange}
@@ -100,9 +99,9 @@ const SignInForm = () => {
                     value={password}
                 />
 
-                {errorMsg.length > 0 ? (
-                    <p>{errorMsg}</p>
-                ) : <p>{logInMsg}</p>}
+                {logInMsg ? (
+                    <p>{logInMsg}</p>
+                ) : <p>{errorMsg}</p>}
 
                 <div className="btns-container">
                     <Button
