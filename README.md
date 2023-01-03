@@ -21,6 +21,7 @@ export const UserContext = createContext({
 }); 
 ```
 > currentUser 初始值設定為null, 後續當用戶登入時，將用戶資料傳遞到currentUser中儲存
+> 
 > setCurrentUser 初始值設定為空白的function，後續Provide Context時將其變成[currentUser, setCurrentUser] = useState(null)中的function
 
 ## 提供Context(Provide)
@@ -38,20 +39,20 @@ export const UserProvider = ({ children }) => {
     )
 }
 ```
-> const [currentUser, setCurrentUser] = useState(null) 透過useState function 將 currentUser跟 setCurrentUser這兩個後續要傳遞到其他Component中使用的變數具有 useState 的功能
- 
-> const value = { currentUser, setCurrentUser } 設定value。 Value將會是後續取用Context時傳遞的變數
- 
-> return的內容 <UserContext.Provider> 是React的用法，其包圍起來的Components是可以使用UserContext數據的對象(本例中將設定為全部Components 見步驟3)
- 
-> {children}是自定義的變數，代表被包起來的對象，例如
-```js
-      <UserProvider>
-        <App />
-      </UserProvider>
-```
-> `<App />` 就是 {children}
-3. 在index.js中 ` import { UserProvider } from './context/user.context'; ` 並將原本的
+> * const [currentUser, setCurrentUser] = useState(null) 透過useState function 將 currentUser跟 setCurrentUser這兩個後續要傳遞到其他Component中使用的變數具有 useState 的功能
+>
+> * const value = { currentUser, setCurrentUser } 設定value。 Value將會是後續取用Context時傳遞的變數
+>
+> * return的內容 <UserContext.Provider> 是React的用法，其包圍起來的Components是可以使用UserContext數據的對象(本例中將設定為全部Components 見步驟3)
+>
+> * {children}是自定義的變數，代表被包起來的對象，如下
+>```js
+>     <UserProvider>
+>       <App />
+>     </UserProvider>
+>```
+> * `<App />` 就是 {children}
+3. 在index.js中 ` import { UserProvider } from './context/user.context'; ` 並將原本的`<App/>`用`<UserProvider>`包覆
 ```js
 root.render(
   <React.StrictMode>
@@ -62,7 +63,7 @@ root.render(
 
 );
 ```
-改成
+
 ```js
 root.render(
   <React.StrictMode>
@@ -76,12 +77,13 @@ root.render(
 );
 ```
 ## 取用Context (useContext)
-### 在登入的Component中取用UserContext中的setcurrentUser function
+### 在Authentication的Component中取用UserContext中的setcurrentUser function，讓用戶在登入或是註冊時，webApp可以儲存該用戶資料
+####  在 Sign in form 中 提取用戶資料儲存到 UserContext的 currentUser中
 1. 在src/components/sign-in-form/sign-in-form.component.jsx中 ` import { useContext } from "react" ` 、 ` import { UserContext } from "../../context/user.context"; `
 2. 透過 React Function - useContext(UserContext) ` const { setCurrentUser } = useContext(UserContext) ` 將setCurrentUser提取到sign in 的 Component中
 3. 在 handleSubmit 的 function 中增加 ` setCurrentUser(user); ` ， 如此一來，當用戶成功登入時，user的data將會傳遞到Context的currentUser之中
 handleSubmit function : 
-```js
+```js 
 const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -100,7 +102,80 @@ const handleSubmit = async (event) => {
         }
     }
 ```
+#### 將google signin的用戶資訊儲存到currentUser中 : 
+```js
+    const signInWithGoogle = async () => {
+        const res = await signInWithGooglePopup();
+        // console.log(res)
+        const user = res.user;
+        await createUserDocumentFromAuth(user);
+        setCurrentUser(user);
+    }
+```
+#### 將Sign up的用戶資訊儲存到currentUser中 : 
+  1. 在sre/components/sign-up-form/sign-up-form.component.jsx中 `import { useContext } from "react"`
+  2. 在SignUpForm中 `const {setCurrentUser}=useContext(UserContext)`
+  3. 在handleSubmit function中 增加 `setCurrentUser(user)`
+  
+
 ### 在navbar的Component中取用UserContext中currentUser的值
+ 
+#### 讓navigation Component追蹤用戶是否登入，如果登入的話，將 "Login" link改成 "Logout"
 1. 在 src/routes/navigation/navigation.component.jsx中 ` import { useContext } from 'react' ` 、` import { UserContext } from '../../context/user.context' `
-2. 在 return 中 增加 `const {currentUser} = useContext(UserContext) `  
+2. 在 Navigation Component 中 Hook `const {currentUser} = useContext(UserContext) `  
 > 提醒，因為currentUser是 useState中的變數，所以當Sign in component中的setCurrentUser被觸發時，navigation中的currentUser因為setState的原因，會Re Rander
+3. 將原本的`<Link> Login <Link/>`改成藉由判斷currentUser是否存在來決定顯示Login或Logout
+```js
+                    {
+                        currentUser ? (
+                            <Link onClick={signOutHandler} className='nav-link' to='/'>
+                                Logout
+                            </Link>
+                        ) : (
+                            <Link className="nav-link" to='/auth'>
+                                Login
+                            </Link>
+                        )
+                    }
+```
+### FireBase設定登出
+FirBase提供signOut方法，將Auth作為變數將用戶登出。in <u>src\utils\firebase\firebase.utils.js</u> :
+```js
+import {signOut} from "firebase/auth";
+export const signOutUser = async() => await signOut(auth);
+```
+### navbar設定登出
+in <u> src\routes\navigation\navigation.component.jsx </u> : 
+```js
+import { signOutUser } from '../../utils/firebase/firebase.utils'
+
+const Navigation = () => {
+    const { currentUser, setCurrentUser } = useContext(UserContext)
+    const signOutHandler = async () => {
+       await signOutUser();
+       setCurrentUser(null)
+    }
+    return (
+        <Fragment>
+            <nav className='navigation'>
+                // other code
+                <div className='nav-links-container'>
+                    // other code
+                    {
+                        currentUser ? (
+                            <Link onClick={signOutHandler} className='nav-link' to='/'>
+                                Logout
+                            </Link>
+                        ) : (
+                            <Link className="nav-link" to='/auth'>
+                                Login
+                            </Link>
+                        )
+                    }
+                </div>
+            </nav>
+            <Outlet />
+        </Fragment>
+    )
+}
+```
