@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect } from "react"
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
@@ -11,7 +11,6 @@ import {
     createUserDocumentFromAuth
 } from "../../utils/firebase/firebase.utils";
 
-import { UserContext } from "../../context/user.context";
 
 const defaultFormField = {
     displayName: '',
@@ -28,8 +27,6 @@ const SignUpForm = () => {
     const [signUpMsg, setSignUpMsg] = useState("");
     const { displayName, email, password, confirmPassword } = formFields;
 
-    const {setCurrentUser}=useContext(UserContext)
-
     useEffect(() => {
         setTimeout(() => {
             setSignUpMsg("")
@@ -44,7 +41,7 @@ const SignUpForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         //confirm  password matched
-        if (password != confirmPassword) {
+        if (password !== confirmPassword) {
             setErrorMsg('passwords do not match');
             return;
         }
@@ -55,11 +52,10 @@ const SignUpForm = () => {
             );
             //store sign-up info to firebase db
             await createUserDocumentFromAuth(user, { displayName });
-            setCurrentUser(user)
-            resetFromField()
             setSignUpMsg("Successfully Sign Up")
+            resetFromField()
         } catch (error) {
-            if (error.code == 'auth/email-already-in-use') {
+            if (error.code === 'auth/email-already-in-use') {
                 setErrorMsg('Cannot create user, email already in use')
             } else {
                 console.dir(error)
@@ -74,8 +70,6 @@ const SignUpForm = () => {
 
         setFormFields({ ...formFields, [name]: value })
     }
-
-
 
     return (
         <div className="sign-up-container">
@@ -125,9 +119,9 @@ const SignUpForm = () => {
                     name="confirmPassword"
                     value={confirmPassword}
                 />
-                {errorMsg.length > 0 ? (
-                    <p>{errorMsg}</p>
-                ) : <p>{signUpMsg}</p>}
+                {signUpMsg ? (
+                    <p>{signUpMsg}</p>
+                ) : <p>{errorMsg}</p>}
 
                 <div className="btns-container">
                     <Button

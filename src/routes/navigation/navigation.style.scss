@@ -41,6 +41,12 @@
         margin-top: 1px;
         animation: animateLogo 300ms linear infinite;
     }
+    .nav-link.logout{
+        color: rgb(255, 99, 125);
+    }
+    .nav-link.logout:hover::after{
+        background: rgb(255, 99, 125);
+    }
 }
 
 @keyframes animateLogo{

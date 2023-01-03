@@ -6,7 +6,8 @@ import {
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
-    signOut
+    signOut,
+    onAuthStateChanged
 } from "firebase/auth";
 
 import {
@@ -25,7 +26,7 @@ const firebaseConfig = {
     appId: "1:765209954987:web:1cf5be0c7c52aef59fc5ee"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
 //googleProvider for google sign in
 const googleProvider = new GoogleAuthProvider();
@@ -47,10 +48,10 @@ export const createUserDocumentFromAuth = async (
 
     //create fake db collection, not create in firestore db 
     const userDocRef = doc(db, "usersCollection", userAuth.uid);
-    console.log(userDocRef);
+    // console.log(userDocRef);
     const userSnapshot = await getDoc(userDocRef);
-    console.log(userSnapshot);
-    console.log(userSnapshot.exists());
+    // console.log(userSnapshot);
+    // console.log(userSnapshot.exists());
 
     //if user data doesn't exist in firstore db
     if (!userSnapshot.exists()) {
@@ -88,3 +89,5 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 }
 
 export const signOutUser = async() => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) => {onAuthStateChanged(auth, callback)};

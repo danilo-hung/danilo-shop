@@ -179,3 +179,35 @@ const Navigation = () => {
     )
 }
 ```
+# 集中組織UserContext
+上述過程，透過在Sign in跟 Sign up Component中設定setCurrentUser來判斷用戶是否登入網站。另一個方法是透過FireBase提供的一個工具 - onAuthStateChanged，來追蹤用戶是否登入。使用這個工具的優點是 : 不需要在SignIn SignUp Component中反覆進行setCurrentUser,而是在userContext中透過useEffect運行onAuthStateChanged來追蹤用戶
+
+```js
+import { createContext, useState, useEffect } from 'react';
+import { onAuthStateChangedListener, createUserDocumentFromAuth} from '../utils/firebase/firebase.utils';
+
+export const UserContext = createContext({
+    currentUser:null,
+    setCurrentUser: () => null
+});
+
+export const UserProvider = ({ children }) => {
+    const [currentUser, setCurrentUser] = useState(null);
+    const value = { currentUser, setCurrentUser };
+
+    useEffect(()=>{
+        onAuthStateChangedListener((user)=>{
+        if(user){
+            createUserDocumentFromAuth(user);
+        }
+            setCurrentUser(user) //null
+        })
+    },[])
+
+    return (
+        <UserContext.Provider value={value}>
+            {children}
+        </UserContext.Provider>
+    )
+}
+```
