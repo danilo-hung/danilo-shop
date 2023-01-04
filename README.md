@@ -4,8 +4,7 @@
 
 1. 在 <u>src/App.js</u>中新增 Shop Route
 2. `import Shop from './routes/shop/shop.component'` (shop.component 是即將新增的 file)
-
-<pre>
+``` hl_lines="2 3"
 import Home from './routes/home/home.component'
 import Navigation from './routes/navigation/navigation.component'
 import Authentication from './routes/authentication/authentication.component.jsx'
@@ -21,4 +20,4 @@ const App = () => {
     </Routes>
   )
 }
-</pre>
+```
