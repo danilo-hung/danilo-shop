@@ -5,7 +5,7 @@
 1. 在 <u>src/App.js</u>中新增 Shop Route
 2. `import Shop from './routes/shop/shop.component'` (shop.component 是即將新增的 file)
 
-```js title="bubble_sort.py""
+<pre>
 import Home from './routes/home/home.component'
 import Navigation from './routes/navigation/navigation.component'
 import Authentication from './routes/authentication/authentication.component.jsx'
@@ -21,4 +21,4 @@ const App = () => {
     </Routes>
   )
 }
-```
+</pre>
