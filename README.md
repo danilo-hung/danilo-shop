@@ -179,7 +179,7 @@ export const CartProvider = ({ children }) => {
 ```
 2. 在cart icon component中取用CartContext中的cartCount，更新在反映產品總數中
 ```diff
--    const {isCartOpen, setIsCartOpen} = useContext(CartContext)
+-   const {isCartOpen, setIsCartOpen} = useContext(CartContext)
 +   const {isCartOpen, setIsCartOpen, cartCount} = useContext(CartContext)
 -  <span className='item-count'>0</span>
 +  <span className='item-count'>{cartCount}</span>

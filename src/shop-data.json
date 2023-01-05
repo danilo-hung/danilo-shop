@@ -26,7 +26,7 @@
     {
       "id": 5,
       "name": "Green Beanie",
-      "imageUrl": "https://images.unsplash.com/photo-1557115837-0c4e58980d47?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&w=300&h=380&q=80",
+      "imageUrl": "https://images.unsplash.com/photo-1557115837-0c4e58980d47?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=380&q=80",
       "price": 18
     },
     {
