@@ -10,7 +10,6 @@ const CheckoutItemCard = ({ item }) => {
     const addItem = () => { addItemToCart(item) }
     const removeItem = () => { removeItemFromCart(item) }
     const deleteItem = () => {
-        console.log("CLICK")
         deleteItemFromCart(item)
     }
     return (
