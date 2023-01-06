@@ -1,21 +1,20 @@
-import './form-input.style.scss'
+import { Group,InputBox, FormInputLabel } from './form-input.style.jsx'
 
 const FormInput = ({ label, htmlFor, ...otherProps }) => {
     return (
-        <div className="group">
-            <input
+        <Group>
+            <InputBox
                 className='input-box'
                 {...otherProps} />
 
             {label ? (
-                <label
-                    className="form-input-label"
+                <FormInputLabel
                     htmlFor={htmlFor}>
                     {label}
-                </label>
+                </FormInputLabel>
             ) : null}
 
-        </div>
+        </Group>
     )
 }
 

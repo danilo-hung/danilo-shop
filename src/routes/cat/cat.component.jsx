@@ -3,7 +3,7 @@ import { useContext, useState, useEffect, Fragment } from "react";
 import { CategoriesContext } from "../../context/categories.context";
 import ProductCard from "../../components/product-card/product-card.component";
 import Button from "../../components/button/button.component";
-import "./cat.style.scss"
+import {CatProductContainer, CatTitle, NotFoundContainer} from "./cat.style.jsx"
 
 const Cat = () => {
     const { catName } = useParams()
@@ -23,22 +23,22 @@ const Cat = () => {
     if (categoriesMap[catName]) {
         return (
             <Fragment>
-                <h2 className="cat-title">{catName.toUpperCase()}</h2>
-                <div className="cat-product-container">
+                <CatTitle>{catName.toUpperCase()}</CatTitle>
+                <CatProductContainer>
                     {
                         products && products.map((product) => {
                             return <ProductCard key={product.id} product={product} />
                         })
                     }
-                </div>
+                </CatProductContainer>
             </Fragment>
         )
     } else {
         return (
-            <div className="not-found-container">
+            <NotFoundContainer>
                 <h1>PAGE NOT FOUND</h1>
                 <Button onClick={backToShopHandler}>Back to Shop</Button>
-            </div>
+            </NotFoundContainer>
 
         )
     }

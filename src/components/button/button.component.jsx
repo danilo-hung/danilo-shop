@@ -1,19 +1,19 @@
-import './button.style.scss'
+import { BaseButton, GoogleButton, InvertedButton, PinkButton } from './button.style.jsx'
+
+const getBtn = (buttonType) => {
+    switch (buttonType) {
+        case 'google': return GoogleButton;
+        case 'inverted': return InvertedButton;
+        case 'pink': return PinkButton;
+        default: return BaseButton
+    }
+}
 
 const Button = ({ children, buttonType, ...otherProps }) => {
-
-    const BUTTON_TYPE_CLASSES = {
-        google: 'google-sign-in',
-        inverted: 'inverted',
-        pink: 'pink-style'
-    }
+    const CustomButton = getBtn(buttonType);
 
     return (
-        <button
-            className={`button-container ${BUTTON_TYPE_CLASSES[buttonType]}`}
-            {...otherProps}>
-                {children}
-        </button>
+        <CustomButton {...otherProps} >{children}</CustomButton>
     )
 }
 

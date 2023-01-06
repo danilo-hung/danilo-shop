@@ -1,6 +1,7 @@
-import './category-preview.style.scss'
 import ProductCard from '../product-card/product-card.component'
 import { useNavigate } from 'react-router-dom'
+
+import {CatPreivewContainer, H2, H3, Preview} from './category-preview.style.jsx'
 
 const CategoryPreview = ({ title, products }) => {
     const navigate = useNavigate()
@@ -8,18 +9,19 @@ const CategoryPreview = ({ title, products }) => {
         navigate(`/shop/${title}`)
     }
     return (
-        <div className='cat-preview-container'>
-            <h2>{title.toUpperCase()}
-            </h2>
-            <div className="preview">
+        <CatPreivewContainer>
+            <H2>
+                {title.toUpperCase()}
+            </H2>
+            <Preview>
                 {
                     products
                         .filter((_, index) => index < 4)
                         .map(product => <ProductCard key={product.id} product={product} title={title} />)
                 }
-            </div>
-            <h3 onClick={navToCatPageHandler} >See More...</h3>
-        </div>
+            </Preview>
+            <H3 onClick={navToCatPageHandler} >See More...</H3>
+        </CatPreivewContainer>
     )
 }
 

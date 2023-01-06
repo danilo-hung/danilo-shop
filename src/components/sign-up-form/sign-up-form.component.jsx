@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 
-import './sign-up-form.style.scss'
+import {SignUpContainer, BtnsContainer} from './sign-up-form.style.jsx'
 
 
 import {
@@ -72,7 +72,7 @@ const SignUpForm = () => {
     }
 
     return (
-        <div className="sign-up-container">
+        <SignUpContainer>
             <h2>Don't Have an Account?</h2>
             <span>Sign Up with Your Email and Password</span>
             <form onSubmit={handleSubmit}>
@@ -123,14 +123,14 @@ const SignUpForm = () => {
                     <p>{signUpMsg}</p>
                 ) : <p>{errorMsg}</p>}
 
-                <div className="btns-container">
+                <BtnsContainer>
                     <Button
                         children="Sign Up"
                         type="submit"
                         buttonType="" />
-                </div>
+                </BtnsContainer>
             </form>
-        </div>
+        </SignUpContainer>
     )
 }
 

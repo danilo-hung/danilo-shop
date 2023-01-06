@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-import './sign-in-form.style.scss'
+import  {SignInContainer, BtnsContainer} from './sign-in-form.style.jsx'
 
 import {
     signInWithGooglePopup,
@@ -67,7 +67,7 @@ const SignInForm = () => {
 
 
     return (
-        <div className="sign-in-container">
+        <SignInContainer>
             <h2>Already Have an Account?</h2>
             <span>Sign in with your email and password</span>
             <form onSubmit={handleSubmit}>
@@ -95,7 +95,7 @@ const SignInForm = () => {
                     <p>{logInMsg}</p>
                 ) : <p>{errorMsg}</p>}
 
-                <div className="btns-container">
+                <BtnsContainer>
                     <Button
                         children="Login"
                         type="submit"
@@ -105,10 +105,10 @@ const SignInForm = () => {
                         children="GOOGLE Login"
                         onClick={signInWithGoogle}
                         buttonType="google" />
-                </div>
+                </BtnsContainer>
             </form>
 
-        </div>
+        </SignInContainer>
     )
 }
 

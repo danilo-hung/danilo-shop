@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { CartContext } from '../../context/cart.context'
 import Button from '../button/button.component'
 
-import './checkout-item-card.style.scss'
+import { CheckoutCardContainer, ProductContainer, ImgBox, Img, DescriptionContainer,QtyControl } from './checkout-item-card.style.jsx'
 
 const CheckoutItemCard = ({ item }) => {
     const { price, qty, name, imageUrl } = item
@@ -13,25 +13,23 @@ const CheckoutItemCard = ({ item }) => {
         deleteItemFromCart(item)
     }
     return (
-        <div className='ckeckout-card-container'>
-            <div className='product-container'>
-                <div className='img-box'>
-                    <img src={imageUrl} alt={name} />
-                </div>
-            </div>
-            <div className="description-container">
+        <CheckoutCardContainer>
+            <ProductContainer>
+                <ImgBox>
+                    <Img src={imageUrl} alt={name} />
+                </ImgBox>
+            </ProductContainer>
+            <DescriptionContainer>
                 <p className='name'>{name}</p>
                 <p className='price'>${price}</p>
                 <div className='qty'>
-                    <i onClick={removeItem} className="fa-solid fa-caret-left qty-control"></i>
+                    <QtyControl onClick={removeItem} className="fa-solid fa-caret-left "></QtyControl>
                     <span>{qty}</span>
-                    <i onClick={addItem} className="fa-solid fa-caret-right qty-control"></i>
+                    <QtyControl onClick={addItem} className="fa-solid fa-caret-right "></QtyControl>
                 </div>
                 <Button onClick={deleteItem} buttonType="pink"> Remove {name}</Button>
-
-
-            </div>
-        </div>
+            </DescriptionContainer>
+        </CheckoutCardContainer>
     )
 }
 

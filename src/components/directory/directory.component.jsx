@@ -1,22 +1,22 @@
 import DirectoryItem from '../directory-item/directory-item.component';
-import './directory.style.scss';
+
+import { Container, DirectoryContainer } from './directory.style.jsx';
 
 const Directory = ({ prop }) => {
     const cats = prop;
     return (
-        <div className='container'>
-            <div className="directory-container" >
+        <Container>
+            <DirectoryContainer >
                 {cats.map((cat) => (
                     <DirectoryItem key={cat.id} prop={cat} />
                 )
                 )}
-
-            </div>
+            </DirectoryContainer>
             <div className="copyRight">
                 <i className="fa-regular fa-registered"></i>
                 <span> Danilo 2022</span>
             </div>
-        </div>
+        </Container>
     )
 }
 

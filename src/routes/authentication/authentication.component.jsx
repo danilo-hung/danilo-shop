@@ -8,7 +8,7 @@
 // } from '../../utils/firebase/firebase.utils';
 import SignUpForm from "../../components/sign-up-form/sign-up-form.component";
 import SignInForm from '../../components/sign-in-form/sign-in-form.component';
-import './authentication.style.scss'
+import {AuthContainer} from './authentication.style.jsx'
 
 
 const Authentication = () => {
@@ -31,7 +31,7 @@ const Authentication = () => {
 
 
     return (
-        <div className="auth-container">
+        <AuthContainer>
             {/* <h1>
                 sign in page
             </h1>
@@ -44,7 +44,7 @@ const Authentication = () => {
                 sign in with google redirect
             </button> */}
             <SignUpForm />
-        </div>
+        </AuthContainer>
     );
 };
 
