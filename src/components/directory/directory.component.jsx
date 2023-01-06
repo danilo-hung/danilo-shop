@@ -1,7 +1,5 @@
-import CatItem from '../cat-item/cat-item.component';
+import DirectoryItem from '../directory-item/directory-item.component';
 import './directory.style.scss';
-
-
 
 const Directory = ({ prop }) => {
     const cats = prop;
@@ -9,7 +7,7 @@ const Directory = ({ prop }) => {
         <div className='container'>
             <div className="directory-container" >
                 {cats.map((cat) => (
-                    <CatItem key={cat.id} prop={cat} />
+                    <DirectoryItem key={cat.id} prop={cat} />
                 )
                 )}
 

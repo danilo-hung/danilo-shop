@@ -1,12 +1,12 @@
-.cat-body-box {
+.directory-item-body-box {
     position: relative;
     padding: 10px;
     flex-basis: 33.3%;
-    height: 300px;
+    height: 330px;
     display: flex;
     align-items: center;
 
-    .cat-container {
+    .directory-item-container {
         width: 100%;
         height: 100%;
         border: 1px solid black;
@@ -56,30 +56,36 @@
                 top: 50%;
                 left: 50%;
                 z-index: 1;
-                width: 100%;
+                width: 150%;
                 transform: translate(-50%, -50%);
             }
         }
 
     }
 
-    .cat-container:hover {
+    .directory-item-container:hover {
         transform: scale(1.05);
         border: none;
+        
 
         .content-box {
             background: rgba(0, 0, 0, 0.863);
             outline: none;
+            cursor: pointer;
+            transition: 100ms;
+            &:active{
+                background: rgb(255, 99, 125);
+            }
         }
 
-        .cat-line {
+        .directory-item-line {
             position: absolute;
             inset: 0;
             overflow: hidden;
             z-index: auto;
         }
 
-        .cat-line::before {
+        .directory-item-line::before {
             content: "";
             position: absolute;
             top: 50%;
@@ -92,7 +98,7 @@
             z-index: auto;
         }
 
-        .cat-line::after {
+        .directory-item-line::after {
             content: "";
             position: absolute;
             inset: 3px;
@@ -112,8 +118,8 @@
 
 }
 
-.cat-body-box:nth-child(4),
-.cat-body-box:nth-child(5) {
+.directory-item-body-box:nth-child(4),
+.directory-item-body-box:nth-child(5) {
     flex-grow: 2;
     max-width: 50%;
 }
@@ -129,21 +135,30 @@
 }
 
 @media screen and (max-width:935px) {
-    .cat-body-box {
+    .directory-item-body-box {
         flex-basis: auto;
         width: 350px;
     }
 
-    .cat-body-box:nth-child(4) {
+    .directory-item-body-box:nth-child(4) {
         flex-grow: 1;
         max-width: 350px;
         flex-basis: auto;
     }
     
-    .cat-body-box:nth-child(5){
+    .directory-item-body-box:nth-child(5){
         flex-grow: 1;
         min-width: 350px;
         max-width: 700px;
     }
 
+}
+
+@media screen and (max-width:719px){
+    .directory-item-body-box:nth-child(5){
+        flex-grow: 1;
+        min-width: 350px;
+        max-width: 350px;
+        width: 350px;
+    }
 }
