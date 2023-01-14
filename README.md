@@ -18,3 +18,4 @@
 專案中使用的Google登入，需要Fire base授權網域才能使用 <br>
 firebase >> go to console >> Authentication >> settings >> 授權網域 (Authorize domain) <br>
 將netlify發布完的網站網址新增到授權網域上
+
