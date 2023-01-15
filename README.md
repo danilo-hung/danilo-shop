@@ -19,3 +19,11 @@
 firebase >> go to console >> Authentication >> settings >> 授權網域 (Authorize domain) <br>
 將netlify發布完的網站網址新增到授權網域上
 
+## 新增Redirect
+因為本專案屬於Single Page Web, 因此在已發布的網站上，如果嘗試導向"/"以外的url，Netlify server會無法判讀要給予什麼get request而回傳error <br>
+為了解決這個問題，需在專案中的public新增檔案"_redirects"讓netlify server判讀url<br>
+1. in public/_redirects
+```
+/* /index.html
+```
+代表當嘗試direct到 "/anyotherpath",一律回傳 /index.html
