@@ -24,6 +24,6 @@ firebase >> go to console >> Authentication >> settings >> 授權網域 (Authori
 為了解決這個問題，需在專案中的public新增檔案"_redirects"讓netlify server判讀url<br>
 1. in public/_redirects
 ```
-/* /index.html
+/* /index.html 200
 ```
 代表當嘗試direct到 "/anyotherpath",一律回傳 /index.html
