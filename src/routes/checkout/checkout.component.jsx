@@ -8,7 +8,7 @@ import CheckoutItemCard from '../../components/checkout-item-card/checkout-item-
 import {CheckoutContainer, Header, Product, Description, ItemCardsContainer, Total} from './checkout.style.jsx'
 
 const Checkout = () => {
-    const { cartItems, totalPrice } = useContext(CartContext)
+    const { cartItems, cartTotal } = useContext(CartContext)
 
     return (
         <CheckoutContainer>
@@ -24,7 +24,7 @@ const Checkout = () => {
                 }
             </ItemCardsContainer>
             {
-                totalPrice!==0 && <Total>total: $ {totalPrice}</Total>
+                cartTotal!==0 && <Total>total: $ {cartTotal}</Total>
             }
             
 
