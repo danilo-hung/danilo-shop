@@ -1,8 +1,9 @@
 import { Outlet, Link } from 'react-router-dom'
 import { Fragment, useContext } from 'react'
 
-import { UserContext } from '../../context/user.context'
 import { CartContext } from '../../context/cart.context'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../../store/user/user.selector'
 
 import { signOutUser } from '../../utils/firebase/firebase.utils'
 
@@ -12,11 +13,8 @@ import CartDropDown from '../../components/cart-dropdown/cart-dropdown.component
 import { NavigationContainer, Logo, NavLinksContainer, NavLink, Logout } from './navigation.style'
 
 const Navigation = () => {
-    const { currentUser } = useContext(UserContext);
+    const currentUser = useSelector(selectCurrentUser)
     const { isCartOpen } = useContext(CartContext)
-    // console.log(currentUser)
-
-
     const signOutHandler = async () => {
         await signOutUser();
     }
