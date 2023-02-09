@@ -1,126 +1,220 @@
-# Reducer
-設置Reducer包含兩個概念 :  ( someReducer = (state, action) ⇒ { … }  )
+# Redux
 
-1. State object : object屬性，代表Reducer中初始State
-2. Action : 類似setState，但用法不同，須包含”type”以及”payload”
-    + type : 必須是String屬性，代表要trigger的類型
-    + payload : 可以是任何屬性，代表要更新到myReducer state object的內容
+Redux類似於reducer+Context
 
-## 將userContext中的useState以useReducer取代
+Context vs Redux 範圍界定 : 
 
-userContext是一個當使用者登入後，將使用者的基本資料儲存以供取用的Context。並透過useState跟useEffect，當使用者登入時setCurrentUser
+當使用Context時，會將Context要使用提取的內容儲存在createContext工具中，再透過CartProvider工具設置可以提取該內容的子component範圍
 
-```jsx
-import { createContext, useEffect, useState } from 'react';
-import { onAuthStateChangedListener, createUserDocumentFromAuth } from '../utils/firebase/firebase.utils';
+而使用Redux時，會將所有內容儲存在Redux Store中，並且該web app的所有Component都可以提取Redux Store的內容
 
-export const UserContext = createContext({
-    currentUser: null,
-    setCurrentUser: () => null
-});
-export const UserProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
-    const value = { currentUser, setCurrentUser };
-    useEffect(() => {
-        onAuthStateChangedListener((user) => {
-            if (user) {
-                createUserDocumentFromAuth(user);
-            }
-            setCurrentUser(user)
-        })
-    }, [])
+useState vs Redux 功能差異 : 
 
-    return (
-        <UserContext.Provider value={value}>
-            {children}
-        </UserContext.Provider>
-    )
-}
-```
+通常使用Context時，會結合useState來操縱內容的變數，讓某個條件下透過setState改變Context內某一個變數的變量
 
-以Reducer取代useState的步驟 : 
+在Redux中，透過reducer概念中的action去改變Redux store中某一變數的變量
 
-1. `import {useReducer} from ‘react’;` 
-2. 自定義userReducer : 
-    
-    函數變數需要符合useReducer取用的格式，所以需要包含 state, action
+## Redux使用
+
+### Redux 基礎環境設定
+
+1. 環境設定
     
     ```jsx
-    const userReducer = (state, action) => {
-    	//從action中提取type 跟 payload
-    	const {type, payload} = action;
-    	//當type等於"SET_CURRENT_USER"時，return 包含使用者資料的 object
-    	switch(type){
-    		case "SET_CURRENT_USER" : 
-    			return{
-    				...state,  //將原本的state回傳進使用者資料中
-    				currentUser: payload  //將object中的currentUser更新為 payload
-    		}
-    		case default : 
-    			throw new Error(`Unhandled type ${type} in userReducer`)
-    	}
-    }
+    npm add redux react-redux redux-logger
     ```
     
-3. 設定type的條件跟state的初始值
+    *redux-logger 幫助查看reducer action 運行的關係
+    
+2. 建立資料夾系統
+    
+    在src中新增store folder, 所有的Redux Code都會放置在該資料夾中運作
+    
+    在src/store中新增 store.js (放置運算Redux的code, 包含dispatch, action…)
     
     ```jsx
-    export const USER_ACTION_TYPES = {
-        SET_CURRENT_USER: 'SET_CURRENT_USER'
-    }
-    
-    const INITIAL_STATE = {
-        currentUser: null
-    }
+    import {compose, createStore, applyMiddleware} from 'redux';
+    import logger from  'redux-logger'
     ```
     
-4. 將userReducer中的switch(type)進行調整
+3. src/store 中新增 root-reducer.js
     
     ```jsx
-    	switch(type){
-    		case "SET_CURRENT_USER" : //刪除此行 
-    		case USER_ACTION_TYPES.SET_CURRENT_USER:
-    			...
-    			...
-    	}
+    import {combineReducers} from 'redux'
+    
+    export const rootReducer = combineReducers({
+         //放置userReducer, cartReducer, categoryReducer...等所需要的Reducer 
+    })
     ```
     
-5. 將 UserProvider中的useState換成useReducer
+    combineReducers 工具可以將不同的reducers合併成一個大型的Reducers提供Redux一併使用
     
-    ```jsx
-    export const UserProvider = ({children}) => {
-    	const [currentUser, setCurrentUser] = useState(null); //刪除此行
-    	const [{currentUser}, dispatch] = useReducer(userReducer, INITIAL_STATE);
-    }
-    ```
-    
-    useReducer中，INITIAL_STATE會被使用作為userReducer的初始state
-    
-    dispatch是更改userReducer中的state object所需要呼叫的函式
-    
-6. 自定義setCurrentUser函式，利用dispatch功能改變currentUser的值
-    
-    ```jsx
-    const setCurrentUser = (user) => {
-            dispatch({ type: USER_ACTION_TYPES.SET_CURRENT_USER, payload: user })
+4. src/store中新增user, cart, category folder, 並在user folder中新增user.reducer.js
+    - user.reducer
+        
+        ```jsx
+        //  src/store/user/user.reducer.js
+        
+        export const USER_ACTION_TYPES = {
+            SET_CURRENT_USER: 'SET_CURRENT_USER' //預先設定trigger userReducer的條件type
         }
-    ```
-    
-    代表trigger userReducer中運行type == USER_ACTION.SET_CURRENT_USER條件時運行相對應的函式，將payload賦值為user回傳到條件成立的userReducer中
-    
-    userReducer : 
+        const INITIAL_STATE = {
+            currentUser: null //設定userReducer內含的初始state值
+        }
+        export const userReducer = (state = INITIAL_STATE, action) => { //state=INITIAL_STATE 設定當userReducer首次取用時的初始State內容
+            const { type, payload } = action;
+            switch (type) {
+                case USER_ACTION_TYPES.SET_CURRENT_USER:
+                    return {
+                        ...state,
+                        currentUser: payload
+                    }
+                default:
+                    ~~throw new Error(`Unhandled type ${type} in userReducer`)~~
+        						return state  //設定當沒有任何action影響userReducer時，回傳原先的state值
+            }
+        }
+        
+        ```
+        
+5. 在 src/store/root-reducer.js中 import userReducer
     
     ```jsx
-    const userReducer = (state, action) => {
-    	const {type, payload} = action;
-    	switch(type){
-    		case "SET_CURRENT_USER" : 
-    			return{
-    				...state, 
-    				currentUser: payload  //payload : user會被回傳，使currentUser : user
-    		}
-    		case default : 
-    			throw new Error(`Unhandled type ${type} in userReducer`)
-    	}
-    }
+    import {combineReducers} from 'redux'
+    
+    import { userReducer } from './user/user.reducer'
+    
+    export const rootReducer = combineReducers({
+         user: userReducer,
+    
+    })
     ```
+    
+6. 在src/store/store.js中使用rootReducer
+    
+    ```jsx
+    import {compose, createStore, applyMiddleware} from 'redux'
+    import {logger} from 'redux-logger'
+    import { rootReducer } from './root-reducer';
+    
+    const middleWares = [logger] //logger是一個工具，在app運行時顯示reducer action dispatched 前後的 state變化
+    //設定middleWares的目的是，幫助在action dispatched的動作前，先運行middleWares, 好讓開發者可以透過logger看到state變化
+    const composedEnhancers = compose(applyMiddleware(...middleWares))
+    //為了在store中啟動logger函數，需要透過applyMiddleware()包裹該函數作為變數使用
+    //compose 是redux中的工具，可將不同的函數組合起來按順序運行 ex: compose(applyMiddleware(logger), functionb(paras)...)
+    export const store = createStore(rootReducer, undefined, composedEnhancers)
+    //createStore需包含2個params : "rootReducer", "preloadedState(初始state)" 以及optional params : "enhancers"
+    ```
+    
+
+### Redux Provider
+
+1. 將Redux Provide到web app之中
+    
+    類似context中provider的做法，Redux提供”Porvider”工具，讓Web app中的children component 可以取用 redux store中的內容
+    
+    ```jsx
+    import React from 'react';
+    import ReactDOM from 'react-dom/client';
+    import reportWebVitals from './reportWebVitals';
+    import App from './App';
+    
+    import { BrowserRouter } from 'react-router-dom';
+    import { UserProvider } from './context/user.context';
+    import { CategoriesProvider } from './context/categories.context';
+    import { CartProvider } from './context/cart.context';
+    import { Provider } from 'react-redux';
+    import { store } from './store/store';
+    
+    import './index.scss';
+    
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(
+      <React.StrictMode>
+        <Provider store={store}>
+        <BrowserRouter>
+          <UserProvider>
+            <CategoriesProvider>
+              <CartProvider>
+                <App />
+              </CartProvider>
+            </CategoriesProvider>
+          </UserProvider>
+        </BrowserRouter>
+        </Provider>
+      </React.StrictMode>
+    );
+    ```
+    
+
+### Redux dispatch
+
+1. 將userContext 中的 useEffect放到 App.js中
+    
+    因為不再透過UserProvider將user的值回傳給children component使用，所以當用戶登入時App執行將user傳入Redux Store的運算過程直接搬到App..js中
+    
+    ```jsx
+    // src/App.js
+    
+    import { useEffect } from 'react';
+    import { useDispatch } from 'react-redux'; 
+    
+    import { onAuthStateChangedListener, createUserDocumentFromAuth } from './utils/firebase/firebase.utils';
+    import { setCurrentUser } from './store/user/user.action';
+    
+    const App = () => {
+      const dispatch = useDispatch()
+      useEffect(() => {
+        onAuthStateChangedListener((user) => {
+          if (user) {
+            createUserDocumentFromAuth(user);
+          }
+          dispatch(setCurrentUser(user))
+        })
+      }, [dispatch])
+    
+      return (
+        //set Routes
+        <Routes>
+    ```
+    
+    - useDispatch : 與reducer的dispatch 功能類似
+        - Reducer的dispatch :
+            
+            需指定dispatch的reducer對象
+            
+            `const [<reducer's state>, dispatch] = useReducer(<defined reducer function>, <initiial state>);`
+            
+            再透過dispatch改變指定reducer內state的值
+            
+            `dispatch({type: <type name>, payload: <payload name>})`
+            
+        - Redux的dispatch :
+            
+            dispatch的功能會指向整個Redux store
+            
+            `const dispatch = useDispatch()`
+            
+            `dispatch({type: <type name>, payload: <payload name>})`
+            
+            ** `setCurrentUser(user) === {type: USER_ACTION_TYPES.SET_CURRENT_USER, payload:*user*}`
+            
+    
+    ** useEffect的second argument “[dispatch]”，可加可不加，不加時的錯誤提示是因為react無法判斷dispatch來自Redux hook，而判讀成一個未在function中定義的函式
+    
+
+### Redux Selector (取用Redux store中的state)
+
+1. 在navigation.component.jsx中import useSelector
+    
+    專案中會使用到currentUser的component是navigation , 因此在navigation中需要取用Redux store中的currentUser
+    
+    ```jsx
+    import { useSelector } from 'react-redux'
+    ```
+    
+2. 從redux store中提取currentUser
+
+    ~~`const { currentUser } = useContext(UserContext);`~~
+
+    `const currentUser = useSelector((state)=>state.user.currentUser)`
