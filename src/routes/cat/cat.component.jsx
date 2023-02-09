@@ -6,12 +6,11 @@ import ProductCard from "../../components/product-card/product-card.component";
 import Button from "../../components/button/button.component";
 import { CatProductContainer, CatTitle, NotFoundContainer } from "./cat.style.jsx"
 
-const Cat = () => {
-    console.log('render/re-render cat component')
+const Cat = () => { 
     const { catName } = useParams()
+    console.log('render/re-render cat component')
     const categoriesMap = useSelector(selectCategoriesMap)
     const [products, setProducts] = useState(categoriesMap[catName])
-
     const navigate = useNavigate()
     const backToShopHandler = () => {
         navigate("/shop")
