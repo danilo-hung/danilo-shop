@@ -8,7 +8,6 @@ import { CatProductContainer, CatTitle, NotFoundContainer } from "./cat.style.js
 
 const Cat = () => { 
     const { catName } = useParams()
-    console.log('render/re-render cat component')
     const categoriesMap = useSelector(selectCategoriesMap)
     const [products, setProducts] = useState(categoriesMap[catName])
     const navigate = useNavigate()
@@ -17,7 +16,6 @@ const Cat = () => {
     }
 
     useEffect(() => {
-        console.log('effect triggered, calling setProducts')
         const catProducts = categoriesMap[catName]
         setProducts(catProducts)
     }, [catName, categoriesMap])
